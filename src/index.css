@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html, body, #root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  @apply bg-clay-50 text-ink-900 font-sans antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition-all duration-200 active:scale-[0.97] disabled:opacity-50 disabled:pointer-events-none;
+  }
+  .btn-primary {
+    @apply btn bg-brand-600 text-white shadow-sm hover:bg-brand-700 hover:shadow-card;
+  }
+  .btn-secondary {
+    @apply btn bg-white text-ink-800 border border-ink-200 hover:border-clay-400 hover:bg-clay-50;
+  }
+  .btn-danger {
+    @apply btn bg-severity-high text-white hover:opacity-90;
+  }
+  .btn-ghost {
+    @apply btn text-ink-700 hover:bg-ink-100;
+  }
+  .card {
+    @apply bg-white rounded-2xl shadow-card border border-ink-100/60 transition-all duration-300;
+  }
+  .card-hover {
+    @apply hover:shadow-card-hover hover:-translate-y-0.5;
+  }
+  .input {
+    @apply w-full rounded-xl border border-ink-200 bg-white px-4 py-3 text-ink-900 placeholder:text-ink-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-brand-400/40 focus:border-brand-400;
+  }
+  .label {
+    @apply block text-sm font-semibold text-ink-800 mb-1.5;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold;
+  }
+}
+
+@layer utilities {
+  .skeleton {
+    @apply bg-gradient-to-r from-ink-100 via-ink-200 to-ink-100 bg-[length:200%_100%] animate-shimmer;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-tap-callout {
+    -webkit-touch-callout: none;
+  }
+}
