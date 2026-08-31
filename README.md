@@ -13,6 +13,77 @@
 
 ---
 
+## 🏗️ System Architecture & Data Flow
+
+```mermaid
+graph TD
+    subgraph Client Layer ["📱 Client Layer (Multilingual Progressive Web App)"]
+        UI["React 18 Single-Page App (Vite + Tailwind CSS)"]
+        AUTH["AuthContext & RLS Guard"]
+        I18N["i18n Engine (English / Hindi / Telugu)"]
+        VOICE["Web Speech API (en-IN / hi-IN / te-IN)"]
+        TRIAGE["Rule-Based AI Triage Engine"]
+        MAP["Leaflet Geospatial Heatmap"]
+        OFFLINE["IndexedDB Offline Queue & Auto-Sync"]
+    end
+
+    subgraph Backend Layer ["⚡ Backend & Database (Supabase PostgreSQL)"]
+        AUTH_DB["Supabase Auth (JWT)"]
+        PG["PostgreSQL Database (RLS Enforced)"]
+        REPORTS["Reports Table"]
+        CASES["Vet Cases Table"]
+        LABS["Lab Referrals Table"]
+        ADVISORIES["Advisories Table"]
+        ANIMALS["Animals Table"]
+        EDGE["Supabase Edge Functions (AI Plugin Point)"]
+    end
+
+    subgraph Infrastructure ["🌐 Infrastructure & Hosting"]
+        NETLIFY["Netlify Global CDN Edge Network"]
+    end
+
+    UI --> VOICE
+    UI --> TRIAGE
+    UI --> MAP
+    UI --> OFFLINE
+    UI --> AUTH
+    AUTH --> AUTH_DB
+    OFFLINE -. Auto-Sync on Network Restoration .-> PG
+    UI <--> PG
+    PG --> REPORTS
+    PG --> CASES
+    PG --> LABS
+    PG --> ADVISORIES
+    PG --> ANIMALS
+    PG -. AI Edge Hook .-> EDGE
+    NETLIFY --> UI
+```
+
+### **Architectural Highlights**
+1. **Decoupled Single-Page Architecture**: React 18 frontend built with Vite 5 and TypeScript 5, deployed to Netlify Edge CDN for high-availability performance across rural networks.
+2. **Offline-First Data Pipeline**: Field symptom reports collected during network outages are queued locally via IndexedDB and synchronized automatically upon reconnection.
+3. **Role-Based Access Control (RBAC)**: Supabase PostgreSQL Row Level Security (RLS) policies enforce isolated data access for **Farmers**, **Veterinary Officials**, and **District Authorities**.
+4. **AI Triage & Plugin Architecture**: Client-side rule-based triage evaluates symptom parameters in **< 100ms** with built-in hooks for edge AI API extensions.
+
+---
+
+## 🛠️ Complete Technology Stack
+
+| Layer / Subsystem | Technology / Library | Version | Purpose & Function |
+| :--- | :--- | :--- | :--- |
+| **Frontend Framework** | **React** | `v18.3.1` | Single-Page Application core UI rendering |
+| **Build Tool & Bundler** | **Vite** | `v5.4.8` | Ultra-fast HMR and optimized production bundling |
+| **Language & Types** | **TypeScript** | `v5.5.3` | Strict static typing and code reliability |
+| **Styling & Design System** | **Tailwind CSS** | `v3.4.1` | Utility-first responsive design system |
+| **Backend & Database** | **Supabase** | `v2.57.4` | Managed PostgreSQL database & Auth |
+| **Speech Recognition** | **Web Speech API** | *Native* | Zero-cost browser speech-to-text (`en-IN`, `hi-IN`, `te-IN`) |
+| **Geospatial Mapping** | **Leaflet & React-Leaflet** | `v1.9.4` / `v4.2.1` | Outbreak maps, cluster markers, and heatmap layer |
+| **Iconography** | **Lucide-React** | `v0.446.0` | Accessible agricultural and medical icons |
+| **Offline Storage** | **IndexedDB & Service Queue** | *Native* | Offline report caching and automatic sync |
+| **Deployment & Hosting** | **Netlify CDN** | *Edge* | Continuous deployment and global static hosting |
+
+---
+
 ## 📌 Problem Statement & Relevance of Solution
 
 ### **The Real-World Challenge in Society & Agriculture**
@@ -143,17 +214,6 @@ gantt
     section Phase 4: Deployment
     Build Verification & Netlify Deploy :done, 2026-08-31, 1d
 ```
-
----
-
-## 🛠️ Technology Stack
-
-- **Frontend**: React 18, TypeScript, Vite, Tailwind CSS, Lucide Icons
-- **Backend & Database**: Supabase (PostgreSQL), Row Level Security (RLS)
-- **Speech Recognition**: Browser-native Web Speech API (`SpeechRecognition`)
-- **Geospatial Mapping**: Leaflet & React-Leaflet
-- **Offline Storage**: IndexedDB / Service Queue
-- **Hosting / Deployment**: Netlify Production Hosting
 
 ---
 
