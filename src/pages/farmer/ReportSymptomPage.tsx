@@ -3,7 +3,7 @@ import { Check, MapPin, Camera, Loader2, ArrowRight, AlertTriangle, ShieldCheck,
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import { SPECIES, getSpeciesPhoto, getSpeciesLabel, getBreedLabel } from '@/lib/species';
-import { runTriage, type TriageResult } from '@/lib/triage';
+import { runTriage, type TriageResult, getLocalizedRecommendation } from '@/lib/triage';
 import { normalizeLocationNullable } from '@/lib/location';
 import { SeverityBadge } from '@/components/SeverityBadge';
 import { VoiceInput } from '@/components/VoiceInput';
@@ -420,7 +420,7 @@ export function ReportSymptomPage({ onNavigate }: { onNavigate: (p: PageId) => v
                 <div className="flex items-center gap-2 mb-1">
                   <SeverityBadge severity={triage.severity} animate={false} />
                 </div>
-                <p className="text-sm text-ink-700 leading-relaxed">{triage.recommendation}</p>
+                <p className="text-sm text-ink-700 leading-relaxed">{getLocalizedRecommendation(triage.recommendationKey, triage.severity, lang)}</p>
               </div>
             </div>
 
@@ -491,7 +491,7 @@ export function ReportSymptomPage({ onNavigate }: { onNavigate: (p: PageId) => v
                 <ShieldCheck size={40} />
               </div>
               <h2 className="font-display text-2xl font-bold text-ink-900 mb-2">{t('reportSubmitted')}</h2>
-              <p className="text-ink-500 text-sm mb-6 max-w-sm mx-auto">{triage.recommendation}</p>
+              <p className="text-ink-500 text-sm mb-6 max-w-sm mx-auto">{getLocalizedRecommendation(triage.recommendationKey, triage.severity, lang)}</p>
 
               <div className="flex justify-center mb-6">
                 <SeverityBadge severity={triage.severity} />

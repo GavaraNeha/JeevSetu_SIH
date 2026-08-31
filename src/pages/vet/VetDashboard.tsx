@@ -6,6 +6,7 @@ import {
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import { getSpeciesPhoto, getSpeciesLabel, getBreedLabel, SPECIES } from '@/lib/species';
+import { getLocalizedRecommendation } from '@/lib/triage';
 import { normalizeLocation } from '@/lib/location';
 import { SeverityBadge } from '@/components/SeverityBadge';
 import { VoiceInput } from '@/components/VoiceInput';
@@ -434,7 +435,7 @@ function CaseDetailModal({
             )}
             {report.triage_recommendation && (
               <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mt-3 text-xs text-amber-700">
-                {report.triage_recommendation}
+                {getLocalizedRecommendation(null, report.severity, lang)}
               </div>
             )}
           </div>

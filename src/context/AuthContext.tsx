@@ -35,7 +35,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [lang, setLangState] = useState<Language>('en');
+  const [lang, setLangState] = useState<Language>(() => {
+    return (localStorage.getItem('jeevsetu_lang') as Language) || 'en';
+  });
 
   const fetchProfile = useCallback(async (uid: string) => {
     const { data, error } = await supabase.from('profiles').select('*').eq('id', uid).maybeSingle();
@@ -45,7 +47,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     if (data) {
       setProfile(data as Profile);
-      setLangState((data as Profile).language);
+      if (!localStorage.getItem('jeevsetu_lang') && (data as Profile).language) {
+        setLangState((data as Profile).language);
+      }
     }
   }, []);
 
@@ -75,6 +79,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const setLang = useCallback((l: Language) => {
     setLangState(l);
+    localStorage.setItem('jeevsetu_lang', l);
   }, []);
 
   const t = createTranslator(lang);
