@@ -97,6 +97,7 @@ export function ReportSymptomPage({ onNavigate }: { onNavigate: (p: PageId) => v
       symptoms: selectedSymptoms,
       notes,
       numberOfAnimalsAffected: numAffected,
+      lang,
     });
     setTriage(result);
     setTriaging(false);

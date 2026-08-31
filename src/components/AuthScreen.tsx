@@ -10,7 +10,17 @@ import type { Role, Language } from '@/types/db';
 type Mode = 'signin' | 'signup';
 
 export function AuthScreen() {
-  const { t, signIn, signUp, lang, setLang } = useAuth();
+  const { t, signIn, signUp, signInWithGoogle, lang, setLang } = useAuth();
+
+  const handleGoogleSignIn = async () => {
+    setError(null);
+    setLoading(true);
+    const { error } = await signInWithGoogle();
+    setLoading(false);
+    if (error) {
+      setError(error);
+    }
+  };
   const [mode, setMode] = useState<Mode>('signin');
   const [role, setRole] = useState<Role>('farmer');
   const [loading, setLoading] = useState(false);
@@ -350,7 +360,7 @@ export function AuthScreen() {
           {/* Continue with Google Button */}
           <button
             type="button"
-            onClick={() => setError('Google sign-in is disabled in offline preview mode.')}
+            onClick={handleGoogleSignIn}
             className="w-full py-3.5 px-4 bg-white border border-[#dbe5d7] hover:border-[#547348] hover:bg-[#f6f9f4] text-[#2c4725] font-medium text-sm sm:text-base rounded-xl transition-all duration-200 flex items-center justify-center gap-3 shadow-sm"
           >
             <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24">

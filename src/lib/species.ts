@@ -140,8 +140,8 @@ export const BREED_LABELS: Record<string, Record<Language, string>> = {
   Sahiwal: { en: 'Sahiwal', hi: 'साहीवाल', te: 'సాహివాల్' },
   'Red Sindhi': { en: 'Red Sindhi', hi: 'रेड सिंधी', te: 'రెడ్ సింధీ' },
   Tharparkar: { en: 'Tharparkar', hi: 'थारपारकर', te: 'తార్పార్కర్' },
-  'Holstein Friesian': { en: 'Holstein Friesian', hi: 'Holstein Friesian', te: 'Holstein Friesian' },
-  Jersey: { en: 'Jersey', hi: 'Jersey', te: 'Jersey' },
+  'Holstein Friesian': { en: 'Holstein Friesian', hi: 'होलस्टीन फ्रीजियन', te: 'హోల్‌స్టెయిన్ ఫ్రీసియన్' },
+  Jersey: { en: 'Jersey', hi: 'जर्सी', te: 'జెర్సీ' },
   Crossbred: { en: 'Crossbred', hi: 'संकर नस्ल', te: 'సంకర జాతి' },
   Nagauri: { en: 'Nagauri', hi: 'नागौरी', te: 'నాగౌరీ' },
 

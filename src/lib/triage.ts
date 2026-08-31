@@ -1,4 +1,4 @@
-import type { Severity } from '@/types/db';
+import type { Severity, Language } from '@/types/db';
 import { getSpeciesInfo } from './species';
 
 export interface TriageInput {
@@ -6,17 +6,47 @@ export interface TriageInput {
   symptoms: string[];
   notes: string;
   numberOfAnimalsAffected?: number;
+  lang?: Language;
 }
 
 export interface TriageResult {
   severity: Severity;
   vetReferralNeeded: boolean;
   recommendation: string;
+  recommendationKey: 'outbreak_mortality' | 'outbreak_multi' | 'high' | 'medium' | 'low';
 }
 
-// ─────────────────────────────────────────────────────────────
-// HIGH-RISK symptom groups that suggest notifiable / outbreak diseases
-// ─────────────────────────────────────────────────────────────
+export const TRIAGE_RECOMMENDATIONS: Record<
+  'outbreak_mortality' | 'outbreak_multi' | 'high' | 'medium' | 'low',
+  Record<Language, string>
+> = {
+  outbreak_mortality: {
+    en: 'Animal mortality / sudden death reported. High risk of contagious outbreak. Immediate veterinary inspection and district notification required. Isolate remaining herd.',
+    hi: 'पशु मृत्यु / अचानक मौत की सूचना। संक्रामक प्रकोप का उच्च जोखिम। तत्काल पशुचिकित्सा निरीक्षण और जिला अधिसूचना आवश्यक। शेष झुंड को अलग करें।',
+    te: 'జంతువు మరణం / హఠాత్ మరణం నివేదించబడింది. సోకే వ్యాప్తి ప్రమాదం ఎక్కువగా ఉంది. తక్షణ పశువైద్య తనిఖీ మరియు జిల్లా సమాచారం అవసరం. మిగిలిన మందని వేరు చేయండి.',
+  },
+  outbreak_multi: {
+    en: 'Potential outbreak detected. Immediate veterinary intervention and district notification required. Isolate affected animals and restrict movement.',
+    hi: 'संभावित प्रकोप का पता चला। तत्काल पशुचिकित्सा हस्तक्षेप और जिला अधिसूचना आवश्यक। प्रभावित पशुओं को अलग करें और आवाजाही प्रतिबंधित करें।',
+    te: 'సంభావ్య వ్యాప్తి గుర్తించబడింది. తక్షణ పశువైద్య జోక్యం మరియు జిల్లా సమాచారం అవసరం. ప్రభావిత జంతువులను వేరు చేయండి మరియు కదలికలను పరిమితం చేయండి.',
+  },
+  high: {
+    en: 'Serious symptoms detected. Veterinary examination recommended within 24 hours. Monitor other animals in the herd closely.',
+    hi: 'गंभीर लक्षण पाए गए। 24 घंटे के भीतर पशुचिकित्सक जांच की सिफारिश की जाती है। झुंड के अन्य पशुओं की निगरानी करें।',
+    te: 'తీవ్రమైన లక్షణాలు గుర్తించబడ్డాయి. 24 గంటల్లోగా పశువైద్య పరీక్ష శ్రేయస్కరం. మందలోని ఇతర జంతువులను దగ్గరగా గమనించండి.',
+  },
+  medium: {
+    en: 'Monitor closely. Isolate the animal if possible. If symptoms worsen or persist beyond 48 hours, consult a veterinarian.',
+    hi: 'गहन निगरानी करें। संभव हो तो पशु को अलग करें। यदि लक्षण बिगड़ते हैं या 48 घंटे से अधिक रहते हैं, तो पशुचिकित्सक से परामर्श लें।',
+    te: 'దగ్గరగా గమనించండి. వీలైతే జంతువును వేరు చేయండి. లక్షణాలు మరింత తీవ్రమైనా లేదా 48 గంటలు దాటినా, పశువైద్యుడిని సంప్రదించండి.',
+  },
+  low: {
+    en: 'Mild symptoms. Keep the animal comfortable and hydrated. Observe for 48 hours. Report again if condition changes.',
+    hi: 'हल्के लक्षण। पशु को आरामदायक और हाइड्रेटेड रखें। 48 घंटे तक निरीक्षण करें। स्थिति बदलने पर फिर से रिपोर्ट करें।',
+    te: 'తేలికపాటి లక్షణాలు. జంతువును సౌకర్యవంతంగా మరియు హైడ్రేటెడ్‌గా ఉంచండి. 48 గంటలు పరిశీలించండి. పరిస్థితి మారితే మళ్లీ నివేదించండి.',
+  },
+};
+
 const OUTBREAK_INDICATORS: Record<string, string[]> = {
   cattle: ['salivation', 'skin_lesions', 'lameness', 'abortion', 'nasal_discharge', 'sudden_death'],
   buffalo: ['salivation', 'skin_lesions', 'lameness', 'abortion', 'nasal_discharge', 'sudden_death'],
@@ -35,25 +65,8 @@ const HIGH_INDICATORS: Record<string, string[]> = {
   poultry: ['fever', 'sudden_death', 'diarrhea', 'reduced_egg'],
 };
 
-/**
- * RULE-BASED TRIAGE ENGINE
- *
- * This function assesses symptom severity and generates a triage recommendation.
- *
- * ┌──────────────────────────────────────────────────────────────────┐
- * │  AI PLUG-IN POINT                                                 │
- * │  To replace this with an external AI API call later:              │
- * │  1. Create a Supabase Edge Function at `supabase/functions/triage`│
- * │  2. Call it from here via fetch():                                │
- * │     const res = await fetch(`${SUPABASE_URL}/functions/v1/triage`│
- * │       { method:'POST', headers, body: JSON.stringify(input) })   │
- * │  3. The edge function can call your AI provider and return       │
- * │     a TriageResult with severity + recommendation.               │
- * │  4. Keep this rule-based function as the fallback.               │
- * └──────────────────────────────────────────────────────────────────┘
- */
 export function ruleBasedTriage(input: TriageInput): TriageResult {
-  const { species, symptoms, notes, numberOfAnimalsAffected } = input;
+  const { species, symptoms, notes, numberOfAnimalsAffected, lang = 'en' } = input;
   const lowerNotes = notes.toLowerCase();
   const symptomCount = symptoms.length;
   const outbreakSymptoms = OUTBREAK_INDICATORS[species] ?? [];
@@ -62,7 +75,6 @@ export function ruleBasedTriage(input: TriageInput): TriageResult {
   const outbreakHits = symptoms.filter((s) => outbreakSymptoms.includes(s));
   const highHits = symptoms.filter((s) => highSymptoms.includes(s));
 
-  // Check for multi-animal outbreak language in notes
   const outbreakKeywords = [
     'many animals',
     'entire herd',
@@ -76,68 +88,54 @@ export function ruleBasedTriage(input: TriageInput): TriageResult {
   const notesSuggestOutbreak = outbreakKeywords.some((k) => lowerNotes.includes(k));
   const manyAffected = (numberOfAnimalsAffected ?? 1) > 3;
 
-  // OUTBREAK-RISK: sudden_death selected, 3+ outbreak symptoms, or outbreak language in notes, or many animals affected
   if (symptoms.includes('sudden_death') || outbreakHits.length >= 3 || (outbreakHits.length >= 2 && notesSuggestOutbreak) || (manyAffected && outbreakHits.length >= 1) || (notesSuggestOutbreak && symptomCount >= 4)) {
+    const key = symptoms.includes('sudden_death') ? 'outbreak_mortality' : 'outbreak_multi';
     return {
       severity: 'outbreak-risk',
       vetReferralNeeded: true,
-      recommendation: symptoms.includes('sudden_death')
-        ? 'Animal mortality / sudden death reported. High risk of contagious outbreak. Immediate veterinary inspection and district notification required. Isolate remaining herd.'
-        : 'Potential outbreak detected. Immediate veterinary intervention and district notification required. Isolate affected animals and restrict movement.',
+      recommendationKey: key,
+      recommendation: TRIAGE_RECOMMENDATIONS[key][lang] ?? TRIAGE_RECOMMENDATIONS[key].en,
     };
   }
 
-  // HIGH: 2+ high-risk symptoms or outbreak indicators with fever
   if (highHits.length >= 3 || (outbreakHits.length >= 2 && highHits.length >= 1) || (highHits.length >= 2 && symptomCount >= 4)) {
     return {
       severity: 'high',
       vetReferralNeeded: true,
-      recommendation:
-        'Serious symptoms detected. Veterinary examination recommended within 24 hours. Monitor other animals in the herd closely.',
+      recommendationKey: 'high',
+      recommendation: TRIAGE_RECOMMENDATIONS.high[lang] ?? TRIAGE_RECOMMENDATIONS.high.en,
     };
   }
 
-  // MEDIUM: 2+ symptoms or 1 high-risk symptom
   if (symptomCount >= 3 || highHits.length >= 1 || outbreakHits.length >= 1) {
     return {
       severity: 'medium',
       vetReferralNeeded: highHits.length >= 1,
-      recommendation:
-        'Monitor closely. Isolate the animal if possible. If symptoms worsen or persist beyond 48 hours, consult a veterinarian.',
+      recommendationKey: 'medium',
+      recommendation: TRIAGE_RECOMMENDATIONS.medium[lang] ?? TRIAGE_RECOMMENDATIONS.medium.en,
     };
   }
 
-  // LOW: minor symptoms
   return {
     severity: 'low',
     vetReferralNeeded: false,
-    recommendation:
-      'Mild symptoms. Keep the animal comfortable and hydrated. Observe for 48 hours. Report again if condition changes.',
+    recommendationKey: 'low',
+    recommendation: TRIAGE_RECOMMENDATIONS.low[lang] ?? TRIAGE_RECOMMENDATIONS.low.en,
   };
 }
 
-/**
- * Main triage entry point. Currently uses rule-based logic.
- * Replace the body with an edge-function call when AI is wired up.
- */
 export async function runTriage(input: TriageInput): Promise<TriageResult> {
-  // ── AI PLUG-IN POINT ──────────────────────────────────────────
-  // When ready, uncomment and replace with an edge function call:
-  //
-  // try {
-  //   const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/triage`, {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-  //     },
-  //     body: JSON.stringify(input),
-  //   });
-  //   if (res.ok) return (await res.json()) as TriageResult;
-  // } catch { /* fall through to rule-based */ }
-  // ──────────────────────────────────────────────────────────────
-
   return ruleBasedTriage(input);
+}
+
+export function getLocalizedRecommendation(recKey: string | null | undefined, severity: Severity, lang: Language): string {
+  if (recKey && recKey in TRIAGE_RECOMMENDATIONS) {
+    return TRIAGE_RECOMMENDATIONS[recKey as keyof typeof TRIAGE_RECOMMENDATIONS][lang];
+  }
+  if (severity === 'outbreak-risk') return TRIAGE_RECOMMENDATIONS.outbreak_multi[lang];
+  if (severity === 'high') return TRIAGE_RECOMMENDATIONS.high[lang];
+  if (severity === 'medium') return TRIAGE_RECOMMENDATIONS.medium[lang];
+  return TRIAGE_RECOMMENDATIONS.low[lang];
 }
 
 export const SEVERITY_CONFIG: Record<
@@ -177,3 +175,4 @@ export const SEVERITY_CONFIG: Record<
     dot: 'bg-red-500',
   },
 };
+
