@@ -1,244 +1,185 @@
+<div align="center">
+
 # 🐄 JeevSetu (जीवसेतु / జీవసేతు)
 ### *Next-Gen Multilingual Livestock Health Surveillance & Outbreak Early-Warning System*
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-Netlify-00C7B7?style=for-the-badge&logo=netlify)](https://6a9530874557b930902774e0--bespoke-quokka-09dc6f.netlify.app/)
-[![GitHub Repository](https://img.shields.io/badge/GitHub-GavaraNeha%2FJeevSetu__SIH-181717?style=for-the-badge&logo=github)](https://github.com/GavaraNeha/JeevSetu_SIH)
-[![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
+<br/>
+
+[![Live Demo](https://img.shields.io/badge/🚀%20Live%20Demo-Netlify-00C7B7?style=for-the-badge&logo=netlify)](https://6a9530874557b930902774e0--bespoke-quokka-09dc6f.netlify.app/)
+[![GitHub Repo](https://img.shields.io/badge/💻%20GitHub-GavaraNeha%2FJeevSetu__SIH-181717?style=for-the-badge&logo=github)](https://github.com/GavaraNeha/JeevSetu_SIH)
+[![Stack](https://img.shields.io/badge/Stack-React%20%7C%20TypeScript%20%7C%20Supabase-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
+[![License](https://img.shields.io/badge/License-MIT-435d39.svg?style=for-the-badge)](LICENSE)
+
+<br/>
+
+**[🌐 Experience Live Demo](https://6a9530874557b930902774e0--bespoke-quokka-09dc6f.netlify.app/)** • **[📖 Read Documentation](#-system-architecture)** • **[💻 Explore Codebase](https://github.com/GavaraNeha/JeevSetu_SIH)**
 
 ---
 
-## 🌐 Live Deployment & Project Links
-- 🚀 **Deployed Web Application**: [https://6a9530874557b930902774e0--bespoke-quokka-09dc6f.netlify.app/](https://6a9530874557b930902774e0--bespoke-quokka-09dc6f.netlify.app/)
-- 💻 **Source Code Repository**: [https://github.com/GavaraNeha/JeevSetu_SIH](https://github.com/GavaraNeha/JeevSetu_SIH)
+</div>
+
+<br/>
+
+## ✨ Key Highlights at a Glance
+
+| ⚡ **< 100ms** | 🗣️ **3 Languages** | 📡 **100% Offline** | 🛡️ **Zero API Cost** |
+| :---: | :---: | :---: | :---: |
+| Automated AI Triage | Speech-to-Text (EN/HI/TE) | IndexedDB Sync Queue | Browser-Native Stack |
+
+<br/>
+
+> [!TIP]
+> **JeevSetu** (Bridge of Life) connects **Rural Farmers**, **Veterinary Officials**, and **District Health Authorities** into a unified digital surveillance network to stop livestock disease outbreaks before they spread.
+
+<br/>
 
 ---
 
-## 🏗️ System Architecture & Data Flow
+## 🌟 Standout Features
+
+<div align="center">
+
+```
+┌───────────────────────────┐      ┌───────────────────────────┐      ┌───────────────────────────┐
+│  🎙️ Multilingual Voice   │      │ ⚡ Automated Triage Engine│      │ 🗺️ Geospatial Outbreak Map│
+│  Dictate symptoms in EN,  │ ───► │ Instant severity scoring  │ ───► │ Real-time district        │
+│  HI, and TE seamlessly    │      │ & mortality escalation    │      │ disease heatmaps          │
+└───────────────────────────┘      └───────────────────────────┘      └───────────────────────────┘
+```
+
+</div>
+
+- 🎙️ **Multilingual Voice Input (Speech-to-Text)**: Speak symptoms naturally in English (`en-IN`), Hindi (`hi-IN`), or Telugu (`te-IN`) using zero-cost browser-native speech recognition.
+- 💀 **Sudden Death / Mortality Escalation**: Mortality reports automatically trigger highest severity (**Outbreak Risk**) and alert regional outbreak cluster tracking.
+- 📶 **Offline-First Resilience**: Reports filed without cellular coverage queue safely in IndexedDB and auto-sync when network returns.
+- 🎨 **Full-Screen Responsive Portal**: Designed with an agricultural visual identity, split-screen landing, and touch-first mobile layouts.
+- 🐃 **Native Indian Breed Database**: Complete localization for Indian livestock breeds across Cattle, Buffalo, Goat, Sheep, Pig, and Poultry.
+
+<br/>
+
+---
+
+## 🏗️ System Architecture
 
 ```mermaid
-graph TD
-    subgraph Client Layer ["📱 Client Layer (Multilingual Progressive Web App)"]
-        UI["React 18 Single-Page App (Vite + Tailwind CSS)"]
-        AUTH["AuthContext & RLS Guard"]
-        I18N["i18n Engine (English / Hindi / Telugu)"]
-        VOICE["Web Speech API (en-IN / hi-IN / te-IN)"]
-        TRIAGE["Rule-Based AI Triage Engine"]
-        MAP["Leaflet Geospatial Heatmap"]
-        OFFLINE["IndexedDB Offline Queue & Auto-Sync"]
+graph LR
+    subgraph Client ["📱 Progressive Web App"]
+        UI["React 18 SPA"]
+        VOICE["Web Speech API"]
+        TRIAGE["AI Triage Engine"]
+        MAP["Leaflet Heatmap"]
+        QUEUE["IndexedDB Offline Queue"]
     end
 
-    subgraph Backend Layer ["⚡ Backend & Database (Supabase PostgreSQL)"]
-        AUTH_DB["Supabase Auth (JWT)"]
-        PG["PostgreSQL Database (RLS Enforced)"]
-        REPORTS["Reports Table"]
-        CASES["Vet Cases Table"]
-        LABS["Lab Referrals Table"]
-        ADVISORIES["Advisories Table"]
-        ANIMALS["Animals Table"]
-        EDGE["Supabase Edge Functions (AI Plugin Point)"]
-    end
-
-    subgraph Infrastructure ["🌐 Infrastructure & Hosting"]
-        NETLIFY["Netlify Global CDN Edge Network"]
+    subgraph Backend ["⚡ Cloud Services"]
+        AUTH["Supabase Auth"]
+        DB[(PostgreSQL + RLS)]
+        EDGE["Edge Functions Plugin"]
     end
 
     UI --> VOICE
     UI --> TRIAGE
     UI --> MAP
-    UI --> OFFLINE
-    UI --> AUTH
-    AUTH --> AUTH_DB
-    OFFLINE -. Auto-Sync on Network Restoration .-> PG
-    UI <--> PG
-    PG --> REPORTS
-    PG --> CASES
-    PG --> LABS
-    PG --> ADVISORIES
-    PG --> ANIMALS
-    PG -. AI Edge Hook .-> EDGE
-    NETLIFY --> UI
+    UI --> QUEUE
+    QUEUE -. Auto-Sync .-> DB
+    UI <--> DB
+    AUTH <--> DB
+    DB -. AI Extension .-> EDGE
 ```
 
-### **Architectural Highlights**
-1. **Decoupled Single-Page Architecture**: React 18 frontend built with Vite 5 and TypeScript 5, deployed to Netlify Edge CDN for high-availability performance across rural networks.
-2. **Offline-First Data Pipeline**: Field symptom reports collected during network outages are queued locally via IndexedDB and synchronized automatically upon reconnection.
-3. **Role-Based Access Control (RBAC)**: Supabase PostgreSQL Row Level Security (RLS) policies enforce isolated data access for **Farmers**, **Veterinary Officials**, and **District Authorities**.
-4. **AI Triage & Plugin Architecture**: Client-side rule-based triage evaluates symptom parameters in **< 100ms** with built-in hooks for edge AI API extensions.
+<br/>
 
 ---
 
-## 🛠️ Complete Technology Stack
+## 🛠️ Tech Stack
 
-| Layer / Subsystem | Technology / Library | Version | Purpose & Function |
-| :--- | :--- | :--- | :--- |
-| **Frontend Framework** | **React** | `v18.3.1` | Single-Page Application core UI rendering |
-| **Build Tool & Bundler** | **Vite** | `v5.4.8` | Ultra-fast HMR and optimized production bundling |
-| **Language & Types** | **TypeScript** | `v5.5.3` | Strict static typing and code reliability |
-| **Styling & Design System** | **Tailwind CSS** | `v3.4.1` | Utility-first responsive design system |
-| **Backend & Database** | **Supabase** | `v2.57.4` | Managed PostgreSQL database & Auth |
-| **Speech Recognition** | **Web Speech API** | *Native* | Zero-cost browser speech-to-text (`en-IN`, `hi-IN`, `te-IN`) |
-| **Geospatial Mapping** | **Leaflet & React-Leaflet** | `v1.9.4` / `v4.2.1` | Outbreak maps, cluster markers, and heatmap layer |
-| **Iconography** | **Lucide-React** | `v0.446.0` | Accessible agricultural and medical icons |
-| **Offline Storage** | **IndexedDB & Service Queue** | *Native* | Offline report caching and automatic sync |
-| **Deployment & Hosting** | **Netlify CDN** | *Edge* | Continuous deployment and global static hosting |
-
----
-
-## 📌 Problem Statement & Relevance of Solution
-
-### **The Real-World Challenge in Society & Agriculture**
-India holds the largest livestock population in the world (over 536 million animals), contributing significantly to rural livelihoods. However, animal healthcare faces critical operational vulnerabilities:
-1. **Delayed Outbreak Detection**: Contagious livestock diseases (e.g. Foot and Mouth Disease, Lumpy Skin Disease, Anthrax, PPR) frequently spread unchecked across villages before government health authorities receive formal reporting.
-2. **Language & Literacy Barriers**: Rural farmers struggle to complete complex medical text forms or communicate symptoms in formal/English terminology.
-3. **Connectivity Blindspots**: Remote agricultural areas often lack stable internet access, resulting in lost or delayed disease reports.
-4. **Fragmented Communication**: Lack of real-time coordination between farmers, local Veterinary Assistant Surgeons (VAS), and District Veterinary Officers (DVO).
-
-### **The JeevSetu Solution**
-**JeevSetu** (Bridge of Life) provides a unified, multilingual, offline-first digital surveillance ecosystem connecting **Farmers**, **Veterinary Officials**, and **District Authorities**. It enables instant symptom reporting, automated rule-based AI triage, geospatial cluster tracking, and rapid emergency advisory broadcasts.
-
----
-
-## 💡 Industry & Market Presence (Existing vs JeevSetu)
-
-| Capability / Feature | Traditional Systems (INAPH / Manual) | Existing Mobile Apps | **JeevSetu Platform** |
-| :--- | :---: | :---: | :---: |
-| **Multilingual Voice Input (Speech-to-Text)** | ❌ No | ❌ Rare / Paid | ✅ **Native Web Speech API (EN, HI, TE)** |
-| **Automated Severity Triage** | ❌ Manual Vet Review | ❌ Basic static FAQ | ✅ **Instant Rule-Based 4-Tier Triage Engine** |
-| **Mortality / Sudden Death Escalation** | ❌ Delayed | ❌ Standard ticket | ✅ **Instant Outbreak-Risk & Village Cluster Trigger** |
-| **Offline Field Capability** | ❌ Requires Active Network | ❌ Limited | ✅ **IndexedDB Offline Queue & Auto-Sync** |
-| **District Outbreak Heatmap** | ❌ Periodic Static PDF | ❌ Basic Pins | ✅ **Real-Time Interactive Geospatial Leaflet Map** |
-| **Normalized Region Analytics** | ❌ Data Duplication | ❌ Duplicate Entries | ✅ **Title-Case Location Normalization Pipeline** |
-
----
-
-## 🚀 Key Improvements & Mentor-Suggested Features Implemented
-
-Following feedback received during mentorship sessions, the following major features were added:
-
-1. 🎙️ **Multilingual Voice Input (Speech-to-Text)**:
-   - Integrated browser-native `SpeechRecognition` API supporting **English (`en-IN`)**, **Hindi (`hi-IN`)**, and **Telugu (`te-IN`)**.
-   - Added microphone buttons alongside every text input field (Symptom Notes, Animal Name, Tag Number, Resolution Notes, Advisory Title/Body).
-   - Illiterate farmers can dictate symptoms naturally; transcribed text appends smoothly without overwriting typed text.
-
-2. 💀 **Sudden Death / Mortality Tracking & Escalation**:
-   - Added `"Sudden death / Mortality"` across **all 6 species** (Cattle, Buffalo, Goat, Sheep, Pig, Poultry).
-   - Selecting sudden death automatically forces triage severity to **Outbreak-Risk / Needs Urgent Attention** and triggers village cluster tracking.
-
-3. 🎨 **Full-Screen Responsive Landing & Auth Portal**:
-   - Rebuilt split-screen login/signup interface (`100vw × 100vh`) with a farm hero section, quick language switcher, and full mobile responsiveness.
-
-4. 🐃 **Complete Native Breed Localization**:
-   - Built a comprehensive translation dataset for Indian-origin breeds across all 6 species (e.g., Gir → గిర్, Murrah → మురా, Osmanabadi → उस्मानाबादी).
-
-5. 🗺️ **Normalized Location Analytics**:
-   - Implemented title-case string normalization (`normalizeLocation`) to eliminate duplicate region cards (e.g. merging `"kakinada"` and `"Kakinada"`).
-
----
-
-## 🔍 Comprehensive Innovation & Impact Evaluation
-
-### 🌍 **1. Applicability of Solution**
-JeevSetu is designed for universal applicability across the entire livestock health ecosystem in India:
-- **Smallholder Rural Farmers**: Easy symptom reporting with speech input, photo uploads, and native language guidance.
-- **Commercial Dairy & Poultry Farms**: Herd health tracking, batch symptom triage, and vaccination recording.
-- **State Animal Husbandry Departments**: Real-time epidemiological surveillance, field vet assignment, and emergency advisories.
-- **Veterinary Polyclinics & Labs**: Integrated sample tracking pipeline from collection → lab delivery → result logging.
-
-### ♿ **2. Usability & Accessibility**
-- **Zero Literacy Barrier**: Speech-to-text dictation in English, Hindi, and Telugu eliminates typing hurdles for illiterate farmers.
-- **Visual Severity Indicators**: Color-coded badges (Red = Outbreak Risk, Orange = High, Yellow = Medium, Green = Low) provide immediate, non-textual feedback.
-- **Offline-First PWA Architecture**: Operates smoothly in remote rural zones without mobile coverage, queuing reports in IndexedDB for auto-sync when online.
-- **Responsive Touch Design**: Optimized for low-cost Android smartphones used in rural India with large touch targets and responsive layouts.
-
-### 📈 **3. Scalability**
-- **Technical Scalability**: Built on a decoupled SPA architecture (Vite + React) deployed to global Edge CDN (Netlify) with a Supabase PostgreSQL backend supporting horizontal read scaling.
-- **Database Architecture**: Row Level Security (RLS) policies enforce strict role isolation across millions of records without performance degradation.
-- **AI/Edge Plugin Architecture**: Modular triage engine designed for seamless replacement with Supabase Edge Functions or external LLM/AI APIs as throughput scales.
-
-### 💰 **4. Economic Sustainability**
-- **High National ROI**: Foot and Mouth Disease (FMD) alone causes losses exceeding **₹20,000 Crore annually** in India. JeevSetu's early warning cluster alerts prevent widespread epidemics, saving livestock livelihoods.
-- **Zero Third-Party Licensing Fees**: Utilizes 100% free browser-native speech recognition (`SpeechRecognition`), open-source mapping (`Leaflet`), and open PostgreSQL infrastructure.
-- **Low Operating Expenditure (OpEx)**: Serverless cloud backend ensures operational costs scale dynamically only with active usage.
-
-### 🌿 **5. Environment Sustainability**
-- **Paperless Veterinary Workflows**: Replaces physical paper registries, sample request slips, and printed advisories with digital workflows.
-- **Reduced Fuel & Travel Emissions**: Early digital triage enables veterinary officers to prioritize critical cases remotely, minimizing unnecessary field trips.
-- **Green Web Footprint**: Optimized production JS/CSS assets (< 180 kB gzipped) minimize device energy consumption and network bandwidth usage.
-
-### 🔐 **6. Existence of Intellectual Property (IP)**
-- **Proprietary Rule-Based Triage & Cluster Detection Engine**: Novel multi-indicator algorithm that correlates symptom groupings, notes keywords, and regional case counts to trigger outbreak alerts.
-- **Multilingual Native Breed Dataset**: Proprietary localized mapping for Indian livestock breeds across Cattle, Buffalo, Goat, Sheep, Pig, and Poultry.
-- **Title-Case Location Normalization Pipeline**: Custom algorithm resolving regional name variations and casing inconsistencies for accurate epidemiological mapping.
-- **Open Source Licensing**: Core codebase published under the permissive **MIT License** for public sector adoption.
-
----
-
-## 🎯 Feasibility Analysis (SMART Criteria)
-
-### 📌 **S — Specific**
-JeevSetu delivers precise, role-tailored workflows:
-- **Farmers**: Report symptoms, dictate notes via voice, view triage recommendations, and track animal medical history.
-- **Veterinary Officials**: Manage open cases, update status (Open → In Progress → Closed), request lab sample collections, and log lab results.
-- **District Officials**: Monitor outbreak heatmaps, track village clusters, and broadcast geo-targeted emergency advisories.
-
-### 📊 **M — Measurable**
-- **Triage Speed**: Symptom severity calculated in **< 100ms**.
-- **Cluster Alert Threshold**: Automatic outbreak trigger when **≥ 3 high-severity cases** occur in a village within **7 days**.
-- **Stat Card Re-computation**: Live, instantaneous recalculation of Dashboard metrics upon case updates or lab referrals.
-- **Data Integrity**: Zero TypeScript errors (`npm run typecheck`), 100% build pass rate (`npm run build`).
-
-### 🛠️ **A — Attainable**
-- Built entirely with lightweight, production-proven modern web technologies: **React 18**, **Vite**, **TypeScript**, **Tailwind CSS**, **Supabase (PostgreSQL)**, **Leaflet Maps**, and **Web Speech API**.
-- **Zero Third-Party API Cost**: Uses browser-native speech recognition and free open-source map tiles.
-
-### 💡 **R — Realistic**
-- Solves real connectivity challenges in rural India via **IndexedDB offline queuing**—farmers can report symptoms without cellular coverage, and reports auto-sync once connection is restored.
-- Works seamlessly across smartphones, tablets, and desktop browsers without mandatory App Store downloads.
-
-### ⏱️ **T — Timeline**
-
-```mermaid
-gantt
-    title JeevSetu Development & Deployment Timeline
-    dateFormat  YYYY-MM-DD
-    section Phase 1: Core System
-    DB Schema & Supabase Setup          :done, 2026-08-29, 1d
-    Role-Based Dashboards (Farmer/Vet)  :done, 2026-08-30, 1d
-    section Phase 2: Refinement & Bugs
-    Location Normalization & Query Fix  :done, 2026-08-31, 1d
-    Severity & Breed Localization       :done, 2026-08-31, 1d
-    section Phase 3: Mentor Enhancements
-    Voice Input (Web Speech API)        :done, 2026-08-31, 1d
-    Sudden Death Triage & Cluster Alert :done, 2026-08-31, 1d
-    Full-Screen Auth Portal Redesign    :done, 2026-08-31, 1d
-    section Phase 4: Deployment
-    Build Verification & Netlify Deploy :done, 2026-08-31, 1d
+```text
+  Frontend   ────► React 18  • TypeScript 5  • Vite 5  • Tailwind CSS
+  Database   ────► Supabase  • PostgreSQL  • Row Level Security (RLS)
+  Speech-to-Text ─► Browser-Native Web Speech API (en-IN, hi-IN, te-IN)
+  Mapping    ────► Leaflet  • React-Leaflet
+  Hosting    ────► Netlify Edge CDN
 ```
 
+<br/>
+
 ---
 
-## 💻 Local Setup Instructions
+## 👥 Role-Based Workflows
+
+```carousel
+### 🌾 1. Farmer / Field Worker
+- Voice-assisted symptom reporting in native language
+- Automated AI triage recommendations & emergency tips
+- Photo uploads & individual animal medical profile history
+<!-- slide -->
+### 🩺 2. Veterinary Assistant Surgeon (VAS)
+- Real-time case queue management (Open → In Progress → Closed)
+- One-click lab sample collection requests
+- Lab result logging & prescription notes
+<!-- slide -->
+### 🛡️ 3. District Veterinary Officer (DVO)
+- Geospatial disease outbreak cluster heatmaps
+- Automatic 3-case village outbreak triggers
+- Geo-targeted emergency advisory broadcast tool
+```
+
+<br/>
+
+---
+
+## 🔍 Innovation & Evaluation Matrix
+
+<details>
+<summary><b>📌 Click to Expand SIH Evaluation Criteria (Relevance, SMART, Applicability & IP)</b></summary>
+
+<br/>
+
+### 1. **Relevance & Market Presence**
+- **The Challenge**: Foot and Mouth Disease (FMD) and Lumpy Skin Disease (LSD) cause **₹20,000+ Crore annual losses** in India due to delayed reporting.
+- **The Solution**: JeevSetu provides real-time digital surveillance, bridging the gap between illiterate farmers and district health officers.
+
+### 2. **Applicability & Usability**
+- Applicable across smallholder farms, commercial dairies, gaushalas, and government veterinary clinics.
+- Zero literacy barrier with voice dictation, color-coded badges, and offline PWA support.
+
+### 3. **Scalability & Sustainability**
+- Stateless React SPA on Netlify CDN + Supabase PostgreSQL RLS scaling to millions of records.
+- 100% free open-source stack (0 third-party API costs). Paperless workflows reduce veterinary carbon footprint.
+
+### 4. **Intellectual Property (IP)**
+- Proprietary Rule-Based Triage & Disease Cluster Algorithm.
+- Localized Indian Breed Translation Dataset.
+- Open source under the permissive **MIT License**.
+
+</details>
+
+<br/>
+
+---
+
+## 🚀 Quick Start & Installation
 
 ```bash
-# 1. Clone the repository
+# Clone repository
 git clone https://github.com/GavaraNeha/JeevSetu_SIH.git
-
-# 2. Navigate to the project directory
 cd JeevSetu_SIH
 
-# 3. Install dependencies
+# Install dependencies & run
 npm install
-
-# 4. Run typecheck
-npm run typecheck
-
-# 5. Start the development server
 npm run dev
 
-# 6. Build for production
+# Verify types & build for production
+npm run typecheck
 npm run build
 ```
 
+<br/>
+
 ---
 
-© 2026 **JeevSetu Team**. Developed for Smart India Hackathon (SIH).
+<div align="center">
+
+© 2026 **JeevSetu Team**. Built for Smart India Hackathon (SIH).
+
+</div>
